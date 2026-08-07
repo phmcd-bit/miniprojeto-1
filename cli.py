@@ -31,6 +31,7 @@ def main():
             usuario_digitado = input("Nome do usuário: ")
             usuario_id = catalogo.buscar_usuario_por_nome(usuario_digitado)
             playlist = catalogo.playlist_de(usuario_id)
+
             if usuario_id is not None:
                 for conteudo in playlist:
                     print(conteudo)
@@ -53,10 +54,13 @@ def main():
 
         elif opcao == "4":
             usuarios_digitados = input("Nomes dos usuários separados por vírgula (ex.: Nicholas, Uchoa): ")
-            usuario_ids = []
-            if len(usuarios_digitados.split(",")) == 1:
+            nomes = usuarios_digitados.split(",")
+
+            if len(nomes) == 1:
                 print("Informe pelo menos dois usuários.")
-            for nome in usuarios_digitados.split(","):
+                continue
+            usuario_ids = []
+            for nome in nomes:
                 usuario_id = catalogo.buscar_usuario_por_nome(nome.strip())
                 if usuario_id is None:
                     print("Sem interseção.")
@@ -70,9 +74,6 @@ def main():
                         print(conteudo)
                 else:
                     print("Sem interseção.")
-
-        elif opcao == "5":
-
-            
+     
 if __name__ == "__main__":
     main()

@@ -82,6 +82,18 @@ class Catalogo:
         for item in valor:
             resultado.extend(self._achatar_generos(item))
         return resultado
+
+    def descricao_de(self, conteudo_id: str) -> str | None:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        titulo = conteudo.get("titulo", conteudo_id)
+        artista = conteudo.get("artista", "")
+        tipo = conteudo.get("tipo", "")
+        tipo_legivel = "música" if tipo == "musica" else "álbum" if tipo == "album" else tipo
+        if artista:
+            return f"{titulo} — {artista} ({tipo_legivel})"
+        return f"{titulo} ({tipo_legivel})"
                 
     def generos_de(self, conteudo_id: str) -> list[str] | None:
         conteudo = self._conteudos_por_id.get(conteudo_id)
