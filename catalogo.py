@@ -75,7 +75,7 @@ class Catalogo:
             return soma
         return None
 
-    def achatar_generos(self, valor):
+    def _achatar_generos(self, valor):
         if isinstance(valor, str):
             return [valor]
         resultado = []
@@ -87,8 +87,8 @@ class Catalogo:
         conteudo = self._conteudos_por_id.get(conteudo_id)
         if conteudo is None:
             return None
-        generos = conteudo.get("genero", [])
-        return sorted(self.achatar_generos(generos))
+        generos = conteudo.get("generos", [])
+        return sorted(self._achatar_generos(generos))
 
     def plataformas_de(self, conteudo_id: str) -> list[str] | None:
         conteudo = self._conteudos_por_id.get(conteudo_id)
