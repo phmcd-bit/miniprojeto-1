@@ -53,13 +53,81 @@ class Catalogo:
 
     # --- dados de um conteúdo ---
     def rating_de(self, conteudo_id: str) -> float | None:
-    def duracao_total_de(self, conteudo_id: str) -> int | None:
-    def generos_de(self, conteudo_id: str) -> list[str] | None:
-    def plataformas_de(self, conteudo_id: str) -> list[str] | None:
-    def data_adicionado_de(self, conteudo_id: str) -> str | None:
-    def execucoes_de(self, conteudo_id: str) -> int | None:
-    def conteudos_do_genero(self, genero: str) -> list[str]:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        rating = conteudo.get("rating")
+        if rating is not None:
+            return float(rating)
+        return None
 
+    def duracao_total_de(self, conteudo_id: str) -> int | None:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        if conteudo.get("tipo") == "musica":
+            return conteudo.get("duracao_seg")
+        if conteudo.get("tipo") == "album":
+            soma = 0
+            for faixa in conteudo.get("faixas"):
+                if faixa.get("duracao_seg") is not None:
+                    soma += faixa.get("duracao_seg")
+            return soma
+        return None
+
+    def achatar_generos(self, valor):
+        if isinstance(valor, str):
+            return [valor]
+        resultado = []
+        for item in valor:
+            resultado.extend(self._achatar_generos(item))
+        return resultado
+                
+    def generos_de(self, conteudo_id: str) -> list[str] | None:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        generos = conteudo.get("genero", [])
+        return sorted(self.achatar_generos(generos))
+
+    def plataformas_de(self, conteudo_id: str) -> list[str] | None:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        plataformas = conteudo.get("plataformas", [])
+        return sorted(plataformas)
+
+    def data_adicionado_de(self, conteudo_id: str) -> str | None:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        data = conteudo.get("data_adicionado")
+        if "/" in data:
+            partes = data.split("/")
+            return f"{partes[2]}-{partes[1]}-{partes[0]}"
+        else:
+            return data
+        
+    def execucoes_de(self, conteudo_id: str) -> int | None:
+        conteudo = self._conteudos_por_id.get(conteudo_id)
+        if conteudo is None:
+            return None
+        engajamento = conteudo.get("engajamento", {})
+        execucoes = engajamento.get("execucoes")
+        if isinstance(execucoes, str):
+            execucoes = execucoes.replace(",", "")
+            return int(execucoes)
+        else:
+            return execucoes
+        
+    def conteudos_do_genero(self, genero: str) -> list[str]:
+        conteudos_filtrados = [
+            conteudo_id
+            for conteudo_id in self._conteudos_por_id
+            if genero in self.generos_de(conteudo_id)
+        ]
+        return sorted(conteudos_filtrados)
+    
     # --- fila de reprodução ---
     def enfileirar(self, conteudo_id: str) -> bool:
     def proximo(self) -> str | None:
