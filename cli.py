@@ -54,7 +54,13 @@ def main():
                     print(f"Playlist de {usuario_digitado} tem 1 item. (Posição 1).")
                 else:
                     print(f"Playlist de {usuario_digitado} tem {len(catalogo.playlist_de(usuario_id))} itens. (Posições 1 a {len(catalogo.playlist_de(usuario_id))}). ")
-                posicao_humana = int(input("Posição: "))
+
+                try:
+                    posicao_humana = int(input("Posição: "))
+                except ValueError:
+                    print("Posição inválida.")
+                    continue
+
                 conteudo = catalogo.conteudo_na_posicao(usuario_id, posicao_humana - 1)
                 if conteudo is not None:
                     print(f"Posição {posicao_humana} de {usuario_digitado}: {catalogo.descricao_de(conteudo)}")
@@ -70,7 +76,9 @@ def main():
             if len(nomes) == 1:
                 print("Informe pelo menos dois usuários.")
                 continue
+
             usuario_ids = []
+
             for nome in nomes:
                 usuario_id = catalogo.buscar_usuario_por_nome(nome.strip())
                 if usuario_id is None:
@@ -161,6 +169,7 @@ def main():
 
         elif opcao == "8":
             conteudo_id = catalogo.proximo()
+
             if conteudo_id is not None:
                 descricao = catalogo.descricao_de(conteudo_id)
                 print(f"Tocando: {descricao}")
@@ -173,6 +182,7 @@ def main():
 
         elif opcao == "9":
             fila = catalogo.fila_atual()
+            
             if fila:
                 print(f"Fila atual ({len(fila)} itens), próximo primeiro:")
                 for indice, conteudo_id in enumerate(fila, start=1):
